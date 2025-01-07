@@ -1,4 +1,5 @@
 from graphics import *
+from cell import * 
 
 def main():
     window = Window(800, 600)
@@ -8,11 +9,15 @@ def main():
     # line = Line(pointa, pointb)
     # window.draw_line(line)
 
-    cell = Cell(window)
+    wall_length = 100
 
-    cell.has_left_wall = False
-    cell.has_bottom_wall = False
-    cell.draw(200, 300, 500, 400)
+    cell1 = Cell(window)
+    cell1.draw(50, 50, 50 + wall_length, 50 + wall_length)
+
+    cell2 = Cell(window)
+    cell2.draw(300, 50, 300 + wall_length, 50 + wall_length)
+
+    cell1.draw_move(cell2)
 
     window.wait_for_close()
 

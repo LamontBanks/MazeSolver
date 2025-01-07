@@ -49,8 +49,7 @@ class Point:
         self.y = y
 
 """
-point_1 - Point()
-point_2 - Point()
+Line is defined by 2 Point()
 """
 class Line:
     def __init__(self, point1, point2):
@@ -66,44 +65,4 @@ class Line:
             self.point1.x, self.point1.y, self.point2.x, self.point2.y, fill=fill_color, width=2
         )
 
-"""Represent a cell of the maze
-    window - Window()
-    x - left to right, y top to bottom
-    x1, y1, is the upper-left corner
-    x2, y2 is the lower-right corner
-"""
-class Cell:
-    def __init__(self, window):
-        # All walls exist by default
-        self.has_left_wall = True
-        self.has_right_wall = True
-        self.has_top_wall = True
-        self.has_bottom_wall = True
-        
-        self._x1 = None
-        self._x2 = None
-        self._y1 = None
-        self._y2 = None
 
-        self.__window = window
-
-    # Draws the required walls of the cell
-    def draw(self, x1, y1, x2, y2):
-        self.__x1 = x1
-        self.__y1 = y1
-        self.__x2 = x2
-        self.__y2 = y2
-
-        walls = []
-
-        if self.has_left_wall:
-            walls.append(Line(Point(self.__x1, self.__y1), Point(self.__x1, self.__y2)))
-        if self.has_right_wall:
-            walls.append(Line(Point(self.__x2, self.__y1), Point(self.__x2, self.__y2)))
-        if self.has_top_wall:
-            walls.append(Line(Point(self.__x1, self.__y1), Point(self.__x2, self.__y1)))
-        if self.has_bottom_wall:
-            walls.append(Line(Point(self.__x1, self.__y2), Point(self.__x2, self.__y2)))
-
-        for wall in walls:
-            self.__window.draw_line(wall)
