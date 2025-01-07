@@ -3,22 +3,16 @@ from graphics import *
 def main():
     window = Window(800, 600)
 
-    point1a = Point(100, 100)
-    point1b = Point(600, 600)
+    # pointa = Point(100, 100)
+    # pointb = Point(600, 600)
+    # line = Line(pointa, pointb)
+    # window.draw_line(line)
 
-    point2a = Point(323, 424)
-    point2b = Point(9, 9)
+    cell = Cell(window)
 
-    point3a = Point(3, 3)
-    point3b = Point(500, 432)
-
-    line1 = Line(point1a, point1b)
-    line2 = Line(point2a, point2b)
-    line3 = Line(point3a, point3b)
-
-    window.draw_line(line1)
-    window.draw_line(line2)
-    window.draw_line(line3)
+    cell.has_left_wall = False
+    cell.has_bottom_wall = False
+    cell.draw(200, 300, 500, 400)
 
     window.wait_for_close()
 
