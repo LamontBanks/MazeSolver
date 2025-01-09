@@ -22,6 +22,9 @@ class Cell:
         self._y1 = None
         self._y2 = None
 
+        # Whether the cell has has wall broken during the creation of the maze
+        self.visited = False
+
         self._window = window
 
     # Draws the required walls of the cell
@@ -30,8 +33,6 @@ class Cell:
         self._y1 = y1
         self._x2 = x2
         self._y2 = y2
-
-        walls = []
 
         left_wall_fill_color =  Cell.FILL_COLOR_WALL if self.has_left_wall else Cell.FILL_COLOR_NO_WALL
         right_wall_fill_color =  Cell.FILL_COLOR_WALL if self.has_right_wall else Cell.FILL_COLOR_NO_WALL
@@ -46,9 +47,6 @@ class Cell:
         self._window.draw_line(Line(Point(self._x1, self._y1), Point(self._x2, self._y1)), fill_color=top_wall_fill_color)
         # Bottom
         self._window.draw_line(Line(Point(self._x1, self._y2), Point(self._x2, self._y2)), fill_color=bottom_wall_fill_color)
-
-        for wall in walls:
-            self._window.draw_line(wall)
 
     """
     Draws a line from the center of one cell to another

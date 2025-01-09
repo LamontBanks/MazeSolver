@@ -33,6 +33,28 @@ class Maze:
         exit_cell.has_bottom_wall = False
         self._draw_cell(self._num_cols - 1, self._num_rows - 1)
 
+    """Return a list of tuples containing the adjacent cells (if any) and their col, row coordinates.
+        Format: (Cell, (col, row)) 
+    Don't rely on the cells being listed in a particular order (i.e., top, bottom, ..., etc.)"""
+    def _adjacent_cells(self, col, row):
+        cells = []
+
+        # left
+        if 0 <= col - 1:
+            cells.append((self._cells[col - 1][row], (col - 1, row)))
+        # right
+        if col + 1 <= self._num_cols - 1:
+            cells.append((self._cells[col + 1][row], (col + 1, row)))
+        # top
+        if row - 1 >= 0:
+            cells.append((self._cells[col][row - 1], (col, row - 1)))
+        # bottom
+        if row + 1 <= self._num_rows - 1:
+            cells.append((self._cells[col][row + 1], (col, row + 1)))
+
+        return cells
+
+
     """Creates and draws the initial cells"""
     def _create_cells(self):
         # Create the cells
