@@ -14,10 +14,10 @@ class Cell:
         self.has_top_wall = True
         self.has_bottom_wall = True
         
-        self._x1 = None
-        self._x2 = None
-        self._y1 = None
-        self._y2 = None
+        self.__x1 = None
+        self.__x2 = None
+        self.__y1 = None
+        self.__y2 = None
 
         self.__window = window
 
