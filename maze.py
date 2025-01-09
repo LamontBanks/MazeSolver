@@ -20,6 +20,20 @@ class Maze:
 
         self._create_cells()
 
+    """Creates the entrance and exit of the maze
+    The entrance to the maze will always be at the top of the top-left cell, the exit always at the bottom of the bottom-right cell.
+    """
+    def _break_entrance_and_exit(self):
+        entrance_cell = self._cells[0][0]
+        exit_cell = self._cells[self._num_cols - 1][self._num_rows - 1]
+
+        entrance_cell.has_top_wall = False
+        self._draw_cell(0, 0)
+
+        exit_cell.has_bottom_wall = False
+        self._draw_cell(self._num_cols - 1, self._num_rows - 1)
+
+    """Creates and draws the initial cells"""
     def _create_cells(self):
         # Create the cells
         # *** Cols are first, Rows second ***
