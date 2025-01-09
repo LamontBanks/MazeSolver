@@ -1,5 +1,6 @@
 from cell import *
 import time
+import random
 
 """
 Represents a grid of cells
@@ -33,6 +34,60 @@ class Maze:
         exit_cell.has_bottom_wall = False
         self._draw_cell(self._num_cols - 1, self._num_rows - 1)
 
+    """Random break walls between cells to create the actual maze.
+    Uses depth-first traversal
+    """
+    def _break_walls_recursive(self, col, row):
+        # Visit the current cell
+        curr_cell = self._cells[col][row]
+        curr_cell.visited = True
+
+        while True:
+            # Get all adjacent cells, then the unvisited cells
+            adjacent_cells = self._adjacent_cells(col, row)
+            unvisited_cells = list(filter(lambda cell_tuple: cell_tuple[0].visited == False, adjacent_cells))
+
+            # If there are no directions to go in, draw the currect cell and return
+            if len(unvisited_cells) == 0:
+                self._draw_cell(col, row)
+                return
+
+            # Otherwise, choose a random adjacent cell and remove the walls between it and this cell
+            next_cell_tuple = unvisited_cells[random.randint(0, len(unvisited_cells) - 1)]
+            next_cell = next_cell_tuple[0]
+            next_cell_col, next_cell_row = next_cell_tuple[1]
+
+            # Determine which walls to remove:
+            # Top
+            # [next]
+            #  ----
+            #  ----
+            # [curr]
+            if next_cell_row < row:
+                next_cell.has_bottom_wall = False
+                curr_cell.has_top_wall = False
+            # Bottom
+            # [curr]
+            #  ----
+            #  ----
+            # [next]
+            elif next_cell_row > row:
+                curr_cell.has_bottom_wall = False
+                next_cell.has_top_wall = False
+            # Left
+            # [next] || [curr]
+            elif next_cell_col < col:
+                next_cell.has_right_wall = False
+                curr_cell.has_left_wall = False
+            # Right
+            # [curr] || [next]
+            elif next_cell_col > col:
+                curr_cell.has_right_wall = False
+                next_cell.has_left_wall = False
+
+            # Move to the next cell and repeat
+            self._break_walls_recursive(next_cell_col, next_cell_row)
+
     """Return a list of tuples containing the adjacent cells (if any) and their col, row coordinates.
         Format: (Cell, (col, row)) 
     Don't rely on the cells being listed in a particular order (i.e., top, bottom, ..., etc.)"""
@@ -53,7 +108,6 @@ class Maze:
             cells.append((self._cells[col][row + 1], (col, row + 1)))
 
         return cells
-
 
     """Creates and draws the initial cells"""
     def _create_cells(self):
