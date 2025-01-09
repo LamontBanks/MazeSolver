@@ -7,6 +7,9 @@ from graphics import Line, Point
     x2, y2 is the lower-right corner
 """
 class Cell:
+    FILL_COLOR_WALL = "black"
+    FILL_COLOR_NO_WALL = "white"
+
     def __init__(self, window):
         # All walls exist by default
         self.has_left_wall = True
@@ -30,14 +33,19 @@ class Cell:
 
         walls = []
 
-        if self.has_left_wall:
-            walls.append(Line(Point(self._x1, self._y1), Point(self._x1, self._y2)))
-        if self.has_right_wall:
-            walls.append(Line(Point(self._x2, self._y1), Point(self._x2, self._y2)))
-        if self.has_top_wall:
-            walls.append(Line(Point(self._x1, self._y1), Point(self._x2, self._y1)))
-        if self.has_bottom_wall:
-            walls.append(Line(Point(self._x1, self._y2), Point(self._x2, self._y2)))
+        left_wall_fill_color =  Cell.FILL_COLOR_WALL if self.has_left_wall else Cell.FILL_COLOR_NO_WALL
+        right_wall_fill_color =  Cell.FILL_COLOR_WALL if self.has_right_wall else Cell.FILL_COLOR_NO_WALL
+        top_wall_fill_color =  Cell.FILL_COLOR_WALL if self.has_top_wall else Cell.FILL_COLOR_NO_WALL
+        bottom_wall_fill_color =  Cell.FILL_COLOR_WALL if self.has_bottom_wall else Cell.FILL_COLOR_NO_WALL
+        
+        # Left
+        self._window.draw_line(Line(Point(self._x1, self._y1), Point(self._x1, self._y2)), fill_color=left_wall_fill_color)
+        # Right
+        self._window.draw_line(Line(Point(self._x2, self._y1), Point(self._x2, self._y2)), fill_color=right_wall_fill_color)
+        # Top
+        self._window.draw_line(Line(Point(self._x1, self._y1), Point(self._x2, self._y1)), fill_color=top_wall_fill_color)
+        # Bottom
+        self._window.draw_line(Line(Point(self._x1, self._y2), Point(self._x2, self._y2)), fill_color=bottom_wall_fill_color)
 
         for wall in walls:
             self._window.draw_line(wall)
