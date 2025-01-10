@@ -20,6 +20,8 @@ class Maze:
         self._cells = []
 
         self._create_cells()
+        self._break_entrance_and_exit()
+        self._break_walls_recursive(0, 0)
 
     """Creates the entrance and exit of the maze
     The entrance to the maze will always be at the top of the top-left cell, the exit always at the bottom of the bottom-right cell.
@@ -88,6 +90,41 @@ class Maze:
             # Move to the next cell and repeat
             self._break_walls_recursive(next_cell_col, next_cell_row)
 
+    """Finds the path from the start (upper-left corner: 0,0) to the end (lower-left corner: max col, row)"""
+    def solve(self):
+        self._reset_cells_visited()
+        # return self._solve_breadth_first_search(0, 0)
+        return self._solve_depth_first_search(0, 0)
+    
+    def _solve_depth_first_search(self, col, row):
+        self._animate()
+        
+        # Mark the current cell as visited
+        curr_cell = self._cells[col][row]
+        curr_cell.visited = True
+
+        # Return if we've reached the end
+        if col == self._num_cols - 1 and row == self._num_rows - 1:
+                return True
+        
+        # Get adjacent, traversible cells (based on walls), then filter for unvisted
+        neighbors = self._adjacent_traversible_cells(col, row)
+        neighbors = list(filter(lambda cell_tuple: cell_tuple[0].visited == False, neighbors))
+
+        for neighbor in neighbors:
+            neighbor_cell = neighbor[0]
+            neighbor_cell_col, neighbor_cell_row = neighbor[1]
+            curr_cell.draw_move(neighbor_cell)
+
+            check_other_paths = self._solve_depth_first_search(neighbor_cell_col, neighbor_cell_row)
+            if check_other_paths:
+                return True
+            else:
+                curr_cell.draw_move(neighbor_cell, is_undo_line=True)
+        
+        return False
+
+
     """Return a list of tuples containing the adjacent cells (if any) and their col, row coordinates.
         Format: (Cell, (col, row)) 
     Don't rely on the cells being listed in a particular order (i.e., top, bottom, ..., etc.)"""
@@ -106,6 +143,35 @@ class Maze:
         # bottom
         if row + 1 <= self._num_rows - 1:
             cells.append((self._cells[col][row + 1], (col, row + 1)))
+
+        return cells
+    
+    """Return a list of tuples containing the adjacent cells *without adjacent walls*, and their col,row coordinates.
+        Format: (Cell, (col, row)) 
+    Don't rely on the cells being listed in a particular order (i.e., top, bottom, ..., etc.)"""
+    def _adjacent_traversible_cells(self, col, row):
+        cells = []
+
+        # left
+        if 0 <= col - 1:
+            left_cell = self._cells[col - 1][row]
+            if not left_cell.has_right_wall:
+                cells.append((left_cell, (col - 1, row)))
+        # right
+        if col + 1 <= self._num_cols - 1:
+            right_cell = self._cells[col + 1][row]
+            if not right_cell.has_left_wall:
+                cells.append((right_cell, (col + 1, row)))
+        # top
+        if row - 1 >= 0:
+            top_cell = self._cells[col][row - 1]
+            if not top_cell.has_bottom_wall:
+                cells.append((top_cell, (col, row - 1)))
+        # bottom
+        if row + 1 <= self._num_rows - 1:
+            bottom_cell = self._cells[col][row + 1]
+            if not bottom_cell.has_top_wall:
+                cells.append((bottom_cell, (col, row + 1)))
 
         return cells
     
@@ -148,4 +214,4 @@ class Maze:
 
     def _animate(self):
         self._window.redraw()
-        time.sleep(0.05)
+        time.sleep(0.025)
