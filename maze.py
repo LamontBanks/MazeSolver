@@ -108,6 +108,13 @@ class Maze:
             cells.append((self._cells[col][row + 1], (col, row + 1)))
 
         return cells
+    
+    """"Resets cell visisted flags to False"""
+    def _reset_cells_visited(self):
+        for col in range(self._num_cols):
+            for row in range(self._num_rows):
+                self._cells[col][row].visited = False
+
 
     """Creates and draws the initial cells"""
     def _create_cells(self):
@@ -123,7 +130,7 @@ class Maze:
             for row in range(self._num_rows):
                 self._draw_cell(col, row)
 
-    """Draws the cell located at row, col on the maze"""
+    """Draws the cell located at col, row on the maze"""
     def _draw_cell(self, col, row):
         if self._window is None:
             return

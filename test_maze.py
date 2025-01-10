@@ -141,6 +141,35 @@ class TestMaze(unittest.TestCase):
         # Adjacent cells count
         self.assertEqual(len(adjacent_cells), 0)
 
+    def test_reset_visited_flags(self):
+        num_cols = 12
+        num_rows = 10
+        maze = Maze(0, 0, num_cols, num_rows, 10, 10)
+
+        maze._break_walls_recursive(0, 0)
+
+        # Checked there are visited nodes
+        contain_visited_flag = False
+        for col in range(num_cols):
+            for row in range(num_rows):
+                if maze._cells[col][row].visited:
+                    contain_visited_flag = True
+                    break
+        self.assertTrue(contain_visited_flag)
+
+        # Reset flags, check for none
+        maze._reset_cells_visited()
+        contain_visited_flag = False
+        for col in range(num_cols):
+            for row in range(num_rows):
+                if maze._cells[col][row].visited:
+                    contain_visited_flag = True
+                    break
+        self.assertFalse(contain_visited_flag)
+
+
+
+
 
 if __name__ == "__main__":
     unittest.main()
