@@ -91,12 +91,12 @@ class Maze:
             self._break_walls_recursive(next_cell_col, next_cell_row)
 
     """Finds the path from the start (upper-left corner: 0,0) to the end (lower-left corner: max col, row)"""
-    def solve(self):
+    def solve(self, show_attempted_paths=False):
         self._reset_cells_visited()
         # return self._solve_breadth_first_search(0, 0)
-        return self._solve_depth_first_search(0, 0)
+        return self._solve_depth_first_search(0, 0, show_attempted_paths)
     
-    def _solve_depth_first_search(self, col, row):
+    def _solve_depth_first_search(self, col, row, show_attempted_paths):
         self._animate()
         
         # Mark the current cell as visited
@@ -116,15 +116,49 @@ class Maze:
             neighbor_cell_col, neighbor_cell_row = neighbor[1]
             curr_cell.draw_move(neighbor_cell)
 
-            check_other_paths = self._solve_depth_first_search(neighbor_cell_col, neighbor_cell_row)
+            check_other_paths = self._solve_depth_first_search(neighbor_cell_col, neighbor_cell_row, show_attempted_paths)
             if check_other_paths:
                 return True
             else:
-                curr_cell.draw_move(neighbor_cell, is_undo_line=True)
+                curr_cell.draw_move(neighbor_cell, is_undo_line=True, is_visible_undo_line=show_attempted_paths)
         
         return False
 
+    """TODO: Finds the path, but doesn't "undo" alternate paths"""
+    def _solve_breadth_first_search(self, col, row):
+        to_visit = []
+        visited = []
 
+        curr_cell = self._cells[col][row]
+        to_visit.append((curr_cell, (col, row)))
+
+        while (col != self._num_cols - 1) and (row != self._num_rows - 1):
+            self._animate()
+
+            # Go to the next cell
+            curr_cell_tuple = to_visit.pop(0)
+            curr_cell = curr_cell_tuple[0]
+            curr_cell_col, curr_cell_row = curr_cell_tuple[1]
+            
+            # Mark it as visited
+            curr_cell.visited = True
+            visited.append(curr_cell_tuple)
+
+            # If the maze exit has been reached, stop
+            if curr_cell_col == self._num_cols - 1 and curr_cell_row == self._num_rows - 1:
+                return visited
+
+            # Get adjacent, traversible cells (based on walls)
+            neighbors = self._adjacent_traversible_cells(curr_cell_col, curr_cell_row)
+
+            for neighbor in neighbors:
+                neighbor_cell = neighbor[0]
+                if (neighbor not in visited) and (neighbor not in to_visit):
+                    to_visit.append(neighbor)
+                    curr_cell.draw_move(neighbor_cell)
+
+        return visited
+            
     """Return a list of tuples containing the adjacent cells (if any) and their col, row coordinates.
         Format: (Cell, (col, row)) 
     Don't rely on the cells being listed in a particular order (i.e., top, bottom, ..., etc.)"""

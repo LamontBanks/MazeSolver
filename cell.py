@@ -52,8 +52,14 @@ class Cell:
     Draws a line from the center of one cell to another
     is_undo_line indicates toggles the line color between red and gray to indicate if a line currently part of the final path
     """
-    def draw_move(self, dest_cell, is_undo_line=False):
-        fill_color = "red" if not is_undo_line else "gray"
+    def draw_move(self, dest_cell, is_undo_line=False, is_visible_undo_line=False):
+        if is_undo_line:
+            if is_visible_undo_line:
+                fill_color = "gray"
+            else:
+                fill_color = "white"
+        else:
+            fill_color = "red"
 
         # Find the center point of both cells
         source_center_x = self._x1 + (abs((self._x2 - self._x1)) // 2)
